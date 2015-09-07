@@ -1,6 +1,6 @@
 # react-webpack-cookbook
 
-Configuring a React setup with Webpack as outlined in this tutorial: http://christianalfoni.github.io/react-webpack-cookbook/Lazy-loaded-entry-points.html
+Configuring a React setup with Webpack as outlined in this tutorial: http://christianalfoni.github.io/react-webpack-cookbook/
 
 Other resources: 
 * https://github.com/petehunt/webpack-howto
