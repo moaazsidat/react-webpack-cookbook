@@ -1,4 +1,13 @@
+var webpack = require('webpack');
 var path = require('path');
+var node_modules_dir = path.join(__dirname, 'node_modules');
+
+var deps = [
+  'react/dist/react.min.js',
+  'react-router/dist/react-router.min.js',
+  'moment/min/moment.min.js',
+  'underscore/underscore-min.js',
+]
 
 config = {
     entry: [
@@ -10,31 +19,25 @@ config = {
         path: path.resolve(__dirname, 'build'),
         filename: 'bundle.js',
     },
+    resolve: {
+      alias: {}
+    }
     module: {
-    loaders: [{
-      test: /\.jsx?$/, // A regexp to test the require path. accepts either js or jsx
-      exclude: /node_modules/,
-      loader: 'babel' // The module to load. "babel" is short for "babel-loader"
-    }, {
-    	test: /\.css$/, // Only .css files
-    	loader: 'style!css' // Run both loaders
-    }, 
-    
-    // LESS
-    {
-      test: /\.less$/,
-      loader: 'style!css!less' 
-    }, 
+      noParse: [],
 
-    // Inlining image & fonts
-    {
-      test: /\.(png|jpg)$/,
-      loader: 'url?limit=25000'
-    }, {
-      test: /\.woff$/,
-      loader: 'url?limit=100000'
-    }]
-  }
+      // Use the expose loader to expose the minified React JS
+      // distribution. For example react-router requires this
+      loaders: [{
+        test: path.resolve(node_modules_dir, deps[0]),
+        loader: "expose?React"
+      }]
+    }
 };
+
+deps.forEach(function (dep) {
+  var depPath = path.resolve(node_modules_dir, dep);
+  config.resolve.alias[dep.split(path.sep)[0]] = depPath;
+  config.module.noParse.push(depPath);
+});
 
 module.exports = config;
