@@ -1,32 +1,29 @@
+/*
+The code written in this file may not be guranteed
+to run since this part of the tutorial covers some high level concepts. 
+*/
+
 'use strict'
 import React from 'react';
-import Hello from './modules/Component.jsx';
-import Feed from './Feed.js'
+import RootComponent from './modules/Component.jsx';
+
 import './main.css';
 
+main();
+var rootInstance = React.render(RootComponent(), document.body);
 
+function main() {
+	// When you render it, assign it to a variable
+	return;
+}
 
-class App extends React.Component {
-	constructor() {
-		this.state = { currentComponent: Feed };
-	}
-	openProfile() {
-		/*
-		What is the array on the first argument?
-		If you try to lazy load a chunk that 
-		depends on an other lazy loaded chunk you 
-		can set it as a dependency in the array. 
-		*/
-		require.ensure(['./FunnyButton.js'], () => {
-			var Profile = require('.Profile.js');
-			this.setState({
-				currentComponent: Profile;
-			});
-		});
-	}
-	render() {
-		return (
-			return <div>{this.state.currentComponent()}</div>
-		);
-	}
+// Then just copy and paste this part at the bottom of
+// the file
+if (module.hot) {
+  require('react-hot-loader/Injection').RootInstanceProvider.injectProvider({
+    getRootInstances: function () {
+      // Help React Hot Loader figure out the root component instances on the page:
+      return [rootInstance];
+    }
+  });
 }

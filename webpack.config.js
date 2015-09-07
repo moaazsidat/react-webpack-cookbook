@@ -1,43 +1,55 @@
+/*
+The code written in this file may not be guranteed
+to run since this part of the tutorial covers some high level concepts. 
+*/
+
 var webpack = require('webpack');
 var path = require('path');
 var node_modules_dir = path.join(__dirname, 'node_modules');
 
-var deps = [
-  'react/dist/react.min.js',
-  'react-router/dist/react-router.min.js',
-  'moment/min/moment.min.js',
-  'underscore/underscore-min.js',
-]
 
-config = {
-    entry: [
-        'webpack/hot/dev-server',
+var config = {
+  devtool: 'eval',
+      entry: [
+        'webpack/hot/only-dev-server',
         'webpack-dev-server/client?http://localhost:8080',
         path.resolve(__dirname, 'app/main.js')
     ],
-    output: {
-        path: path.resolve(__dirname, 'build'),
-        filename: 'bundle.js',
-    },
-    resolve: {
-      alias: {}
-    }
-    module: {
-      noParse: [],
+  output: {
+    path: path.resolve(__dirname, './dist'),
+    filename: 'bundle.js'
+  },
+  module: {
+    loaders: [{
+      test: /\.js$/,
+      loaders: ['react-hot', 'babel']
+    }, {
+      test: /\.jsx?$/, // A regexp to test the require path. accepts either js or jsx
+      exclude: /node_modules/,
+      loaders: ['react-hot', 'babel'] // The module to load. "babel" is short for "babel-loader"
+    }, {
+      test: /\.css$/, // Only .css files
+      loader: 'style!css' // Run both loaders
+    }, 
+    
+    // LESS
+    {
+      test: /\.less$/,
+      loader: 'style!css!less' 
+    }, 
 
-      // Use the expose loader to expose the minified React JS
-      // distribution. For example react-router requires this
-      loaders: [{
-        test: path.resolve(node_modules_dir, deps[0]),
-        loader: "expose?React"
-      }]
-    }
+    // Inlining image & fonts
+    {
+      test: /\.(png|jpg)$/,
+      loader: 'url?limit=25000'
+    }, {
+      test: /\.woff$/,
+      loader: 'url?limit=100000'
+    }]
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ]
 };
-
-deps.forEach(function (dep) {
-  var depPath = path.resolve(node_modules_dir, dep);
-  config.resolve.alias[dep.split(path.sep)[0]] = depPath;
-  config.module.noParse.push(depPath);
-});
 
 module.exports = config;
